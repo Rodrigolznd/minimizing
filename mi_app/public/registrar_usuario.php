@@ -5,16 +5,25 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
     exit();
 }
 ?>
+<?php
+include 'conexion.php';
+
+// Obtener todos los usuarios
+$query = "SELECT id, nombre, nombre_usuario, correo, rol, estado, fecha_registro FROM usuarios";
+$stmt = $pdo->query($query);
+$usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Inventario</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de usuarios</title>
     <link rel="stylesheet" href="css/styles.css">
     <style>
-        /* Estilos para el modal */
+               /* Estilos para el modal */
         .modal {
-            display: none;
+            display: block; /* Ocultar el modal por defecto */
             position: fixed;
             z-index: 10;
             left: 0;
@@ -76,18 +85,18 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
         <div class="menu">
             <div class="logo-container">
                 <img src="img/logo.png" alt="Logo" class="logo">
-            </div>  
+            </div>
             <div>
                 <nav>
-                    <a href="usuarios.php" class="link" id="registro-link" style="background-color: rgb(192, 192, 192);">
-                        <img src="img/registro.png" alt="Registro" class="icon">
+                    <a href="dashboard_admin.php" class="link" style="background-color: rgb(255, 255, 255);">
+                        <img src="img/registro.png" alt="Gestión" class="icon">
                         <span class="title">Usuarios</span>
                     </a>
-                    <a href="dashboard_admin.php" class="link" style="background-color: white">
+                    <a href="inventario.php" class="link" style="background-color: rgb(192, 192, 192);">
                         <img src="img/inventario.png" alt="Inventario" class="icon">
                         <span class="title">Inventario</span>
                     </a>
-                    <a href="facturacion.html" class="link" style="background-color: rgb(192, 192, 192);">
+                    <a href="facturacion.php" class="link" style="background-color: rgb(192, 192, 192);">
                         <img src="img/factura.png" alt="Facturación" class="icon">
                         <span class="title">Facturación</span>
                     </a>
@@ -102,35 +111,46 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
         <div id="registro-acciones" class="acciones">
             <?php if ($_SESSION['rol'] === 'admin'): ?>
             <a href="#" id="openModalBtn">
-                Registrar Producto
-                <img src="img/registrarproducto.png" width="30" alt="registrarproducto">
+                Registrar Usuario
+                <img src="img/registrar.png" width="30" alt="Registrar">
             </a>
             <?php endif; ?>
             <div class="separator"></div>
-            <a href="generarreporte.html">
-                Generar reporte
-                <img src="img/generarreporte.png" width="30" alt="generarreporte">
-            </a>
-         </div>       
+            <?php if ($_SESSION['rol'] === 'admin'): ?>
+        <a href="usuarios.php">
+             Editar <img src="img/editar.png" width="30" alt="Editar">
+        </a>
+        <?php endif; ?>
+            <div class="separator"></div>
+            <?php if ($_SESSION['rol'] === 'admin'): ?>
+            <a href="#eliminar">
+             Eliminar <img src="img/eliminar.png" width="30" alt="Eliminar"></a>
+            <?php endif; ?>
+        </div>
 
-         <!-- Tabla de productos -->
-         <div class="container-fluid">
+        <div class="container-fluid">
             <br>
             <table class="custom-table">
-              <thead>
-                <tr>
-                <th>Nombre del producto</th>
-                <th>Descripción</th>
-                <th>Precio</th>
-                <th>Categoría</th>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Usuario</th>
+                <th>Correo</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Fecha Registro</th>
+                <th>Acción</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($usuarios as $usuario): ?>
                 <tr>
+                    <td><?php echo htmlspecialchars($usuario['nombre']); ?></td>
                     <td><?php echo htmlspecialchars($usuario['nombre_usuario']); ?></td>
+                    <td><?php echo htmlspecialchars($usuario['correo']); ?></td>
                     <td><?php echo htmlspecialchars($usuario['rol']); ?></td>
-                    <td><?php echo htmlspecialchars($usuario['estado']); ?></td>
+                    <td><?php echo $usuario['estado'] ? 'Activo' : 'Inactivo'; ?></td>
+                    <td><?php echo htmlspecialchars($usuario['fecha_registro']); ?></td>
                     <td>
                         <a href="editar_usuario.php?id=<?php echo $usuario['id']; ?>">Editar</a>
                     </td>
@@ -141,39 +161,45 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
         </div>  
     </div>
 
-    <!-- Modal para registrar producto -->
     <div id="registerModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-            <span class="close" id="closeModalBtn">&times;</span>
+                <span class="close" id="closeModalBtn">&times;</span>
             </div>
-            <h2>Registrar Producto</h2>
-    <form id="registroProductoForm">
-    <label for="nombre">Nombre del Producto:</label>
-    <input type="text" id="nombre" name="nombre" placeholder="Nombre del producto" required>
+            <h2>Registrar Usuario</h2>
+    <form id="registroForm">
+    <label for="nombre">Nombre completo:</label>
+    <input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre completo" required autocomplete="name">
 
-    <label for="descripcion">Descripción:</label>
-    <textarea id="descripcion" name="descripcion" placeholder="Descripción del producto" rows="4" required style="margin-bottom: 10px;"></textarea>
-    <label for="precio">Precio:</label>
-    <input type="number" id="precio" name="precio" placeholder="Precio" required>
+    <label for="nombre_usuario">Nombre de usuario:</label>
+    <input type="text" id="nombre_usuario" name="nombre_usuario" placeholder="Ingrese su usuario" required autocomplete="username" minlength="4" maxlength="30">
 
-    <label for="categoria">Categoría:</label>
-    <select id="categoria" name="categoria" required>
-        <option value="Muebles">Muebles</option>
-        <option value="Electronica">Electrónica</option>
-        <option value="Oficinas">Oficinas</option>
+    <label for="correo">Correo Electrónico:</label>
+    <input type="email" id="correo" name="correo" placeholder="ejemplo@correo.com" required autocomplete="email">
+
+    <label for="clave">Contraseña:</label>
+    <input type="password" id="clave" name="clave" placeholder="Ingrese su contraseña" required minlength="6" maxlength="20" autocomplete="new-password">
+
+    <label for="rol">Rol:</label>
+    <select id="rol" name="rol" required>
+        <option value="" disabled selected>Seleccione un rol</option>
+        <option value="usuario">Usuario</option>
+        <option value="admin">Administrador</option>
+        <option value="cliente">Cliente</option>
     </select>
 
     <div class="buttons">
-        <button type="submit">Registrar Producto</button>
+        <button type="submit">Registrar</button>
         <button type="button" id="cancelModalBtn">Cancelar</button>
-    </div>
-</form>
+           </div>
+        </form>
 
         </div>
     </div>
 
-    <script src="js/registrar_producto.js"></script>
+
+
+    <script src="js/registro.js"></script>
 
     <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -200,16 +226,6 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
             }
         }
     });
-    // Cerrar el modal con el botón de cancelar
-document.getElementById("cancelModalBtn").addEventListener("click", function () {
-    document.getElementById("registerModal").style.display = "none";
-});
-
-// Cerrar el modal con la 'X'
-document.getElementById("closeModalBtn").addEventListener("click", function () {
-    document.getElementById("registerModal").style.display = "none";
-});
-
 </script>
 
 </body>

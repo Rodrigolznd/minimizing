@@ -1,15 +1,20 @@
-document.getElementById("registroForm").addEventListener("submit", function(e) {
+document.getElementById("registroForm").addEventListener("submit", function (e) {
     e.preventDefault();
-    const nombre = document.getElementById("nombre").value;
-    const correo = document.getElementById("correo").value;
-    const clave = document.getElementById("clave").value;
-    const rol = document.getElementById("rol").value;
+
+    const formData = new FormData(this);
 
     fetch("../backend/registro.php", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `nombre=${nombre}&correo=${correo}&clave=${clave}&rol=${rol}`
+        body: formData
     })
-    .then(response => response.text())
-    .then(data => alert(data));
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("✅ " + data.message);
+            document.getElementById("registroForm").reset();
+        } else {
+            alert("❌ " + data.message);
+        }
+    })
+    .catch(error => console.error("Error:", error));
 });

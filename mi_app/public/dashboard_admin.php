@@ -21,7 +21,7 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
             <div>
                 <nav>
                 <div>
-                    <a href="registrousuario.php" class="link" id="registro-link" style="background-color: rgb(192, 192, 192);">
+                    <a href="usuarios.php" class="link" id="registro-link" style="background-color: rgb(192, 192, 192);">
                     <img src="img/registro.png" alt="Registro" class="icon">
                     <span class="title">Usuarios</span>
                 </a></div>

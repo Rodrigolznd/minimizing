@@ -69,7 +69,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endif; ?>
             <div class="separator"></div>
             <?php if ($_SESSION['rol'] === 'admin'): ?>
-        <a href="#editar">
+        <a href="editar_usuario.php">
              Editar <img src="img/editar.png" width="30" alt="Editar">
         </a>
         <?php endif; ?>
@@ -91,7 +91,6 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Rol</th>
                 <th>Estado</th>
                 <th>Fecha Registro</th>
-                <th>Acción</th>
             </tr>
         </thead>
         <tbody>
@@ -103,10 +102,6 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td><?php echo htmlspecialchars($usuario['rol']); ?></td>
                     <td><?php echo $usuario['estado'] ? 'Activo' : 'Inactivo'; ?></td>
                     <td><?php echo htmlspecialchars($usuario['fecha_registro']); ?></td>
-                    <td>
-                        <a href="editar_usuario.php?id=<?php echo $usuario['id']; ?>">Editar</a>
-                    </td>
-                </tr>
             <?php endforeach; ?>
         </tbody>
     </table>

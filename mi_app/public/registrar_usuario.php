@@ -110,14 +110,13 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="main-container">
         <div id="registro-acciones" class="acciones">
             <?php if ($_SESSION['rol'] === 'admin'): ?>
-            <a href="#" id="openModalBtn">
-                Registrar Usuario
-                <img src="img/registrar.png" width="30" alt="Registrar">
-            </a>
+        <a href="#" id="openModalBtn">
+             Registrar Usuario<img id="registerIcon" src="img/clicregistrar.png" width="30" alt="Registrar">
+        </a>
             <?php endif; ?>
             <div class="separator"></div>
             <?php if ($_SESSION['rol'] === 'admin'): ?>
-        <a href="usuarios.php">
+        <a href="editar_usuario.php">
              Editar <img src="img/editar.png" width="30" alt="Editar">
         </a>
         <?php endif; ?>
@@ -139,7 +138,6 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Rol</th>
                 <th>Estado</th>
                 <th>Fecha Registro</th>
-                <th>Acción</th>
             </tr>
         </thead>
         <tbody>
@@ -151,9 +149,6 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td><?php echo htmlspecialchars($usuario['rol']); ?></td>
                     <td><?php echo $usuario['estado'] ? 'Activo' : 'Inactivo'; ?></td>
                     <td><?php echo htmlspecialchars($usuario['fecha_registro']); ?></td>
-                    <td>
-                        <a href="editar_usuario.php?id=<?php echo $usuario['id']; ?>">Editar</a>
-                    </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
@@ -207,14 +202,17 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
         const openModalBtn = document.getElementById("openModalBtn");
         const closeModalBtn = document.getElementById("closeModalBtn");
         const cancelModalBtn = document.getElementById("cancelModalBtn");
+        const registerIcon = document.querySelector("#openModalBtn img"); // Selecciona la imagen dentro del enlace
 
         openModalBtn.addEventListener("click", function(event) {
             event.preventDefault();
             registerModal.style.display = "block";
+            registerIcon.src = "img/clicregistrar.png"; // Cambia la imagen al abrir el modal
         });
 
         function closeRegisterModal() {
             registerModal.style.display = "none";
+            registerIcon.src = "img/registrar.png"; // Cambia la imagen al cerrar el modal
         }
 
         closeModalBtn.addEventListener("click", closeRegisterModal);

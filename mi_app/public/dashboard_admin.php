@@ -29,7 +29,7 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
                     <img src="img/inventario.png" alt="Inventario" class="icon">
                     <span class="title">Inventario</span>
                 </a>
-                <a href="img/facturacion.html" class="link" style="background-color: rgb(192, 192, 192);">
+                <a href="facturacion.php" class="link" style="background-color: rgb(192, 192, 192);">
                     <img src="img/factura.png" alt="Facturación" class="icon">
                     <span class="title">Facturación</span>
                 </a>

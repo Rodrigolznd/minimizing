@@ -8,81 +8,109 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
 <?php
 include 'conexion.php';
 
-// Verificar si se recibe un ID
-$id = $_GET['id'] ?? null;
-$usuario = null;
-
-if ($id) {
-    // Consultar los datos del usuario
-    $query = "SELECT * FROM usuarios WHERE id = :id";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute(['id' => $id]);
-    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$usuario) {
-        header("Location: usuarios.php");
-        exit;
-    }
-}
-
-// Procesar la actualización del usuario
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id) {
-    $nombre = $_POST['nombre'];
-    $nombre_usuario = $_POST['nombre_usuario'];
-    $correo = $_POST['correo'];
-    $rol = $_POST['rol'];
-    $estado = $_POST['estado'];
-
-    $updateQuery = "UPDATE usuarios SET nombre = :nombre, nombre_usuario = :nombre_usuario, correo = :correo, rol = :rol, estado = :estado WHERE id = :id";
-    $updateStmt = $pdo->prepare($updateQuery);
-    $updateStmt->execute([
-        'nombre' => $nombre,
-        'nombre_usuario' => $nombre_usuario,
-        'correo' => $correo,
-        'rol' => $rol,
-        'estado' => $estado,
-        'id' => $id
-    ]);
-
-    header("Location: usuarios.php");
-    exit;
-}
+// Obtener todos los usuarios
+$query = "SELECT id, nombre, nombre_usuario, correo, rol, estado, fecha_registro FROM usuarios";
+$stmt = $pdo->query($query);
+$usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Usuario</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <title>Gestión de usuarios</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+    .main-container {
+        border: 2px solid black; /* Borde negro alrededor del contenedor */
+        margin: 20px auto;
+        width: 80%;
+        height: 400px; /* Ajusta la altura del contenedor */
+        overflow-y: auto; /* Habilita el scroll vertical */
+        background-color: #f0f0f0; /* Fondo gris claro */
+        padding: 10px;
+        }
+    </style>
+ </head>
 <body>
-    <h1>Editar Usuario</h1>
-    <form method="POST">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($usuario['nombre']); ?>" required><br>
+    <header>
+        <div class="menu">
+            <div class="logo-container">
+                <img src="img/logo.png" alt="Logo" class="logo">
+            </div>
+            <div>
+                <nav>
+                    <a href="dashboard_admin.php" class="link" style="background-color: rgb(255, 255, 255);">
+                        <img src="img/registro.png" alt="Gestión" class="icon">
+                        <span class="title">Usuarios</span>
+                    </a>
+                    <a href="inventario.php" class="link" style="background-color: rgb(192, 192, 192);">
+                        <img src="img/inventario.png" alt="Inventario" class="icon">
+                        <span class="title">Inventario</span>
+                    </a>
+                    <a href="facturacion.php" class="link" style="background-color: rgb(192, 192, 192);">
+                        <img src="img/factura.png" alt="Facturación" class="icon">
+                        <span class="title">Facturación</span>
+                    </a>
+                    <h1>Bienvenido Administrador, <?php echo $_SESSION['nombre']; ?> 🛠️</h1>
+                    <a href="../backend/logout.php">Cerrar sesión</a>
+                </nav>
+            </div>
+        </div>
+    </header>
 
-        <label for="nombre_usuario">Nombre de Usuario:</label>
-        <input type="text" id="nombre_usuario" name="nombre_usuario" value="<?php echo htmlspecialchars($usuario['nombre_usuario']); ?>" required><br>
+    <div class="main-container">
+        <div id="registro-acciones" class="acciones">
+            <?php if ($_SESSION['rol'] === 'admin'): ?>
+        <a href="registrar_usuario.php" id="openModalBtn">
+                Registrar Usuario
+                <img src="img/registrar.png" width="30" alt="Registrar">
+            </a>
+            <?php endif; ?>
+            <div class="separator"></div>
+            <?php if ($_SESSION['rol'] === 'admin'): ?>
+        <a href="usuarios.php">
+             Editar <img src="img/cliceditar.png" width="30" alt="Editar">
+        </a>
+        <?php endif; ?>
+            <div class="separator"></div>
+            <?php if ($_SESSION['rol'] === 'admin'): ?>
+            <a href="#eliminar">
+             Eliminar <img src="img/eliminar.png" width="30" alt="Eliminar"></a>
+            <?php endif; ?>
+        </div>
 
-        <label for="correo">Correo:</label>
-        <input type="email" id="correo" name="correo" value="<?php echo htmlspecialchars($usuario['correo']); ?>" required><br>
-
-        <label for="rol">Rol:</label>
-        <select id="rol" name="rol" required>
-            <option value="usuario" <?php if ($usuario['rol'] === 'usuario') echo 'selected'; ?>>Usuario</option>
-            <option value="admin" <?php if ($usuario['rol'] === 'admin') echo 'selected'; ?>>Admin</option>
-            <option value="cliente" <?php if ($usuario['rol'] === 'cliente') echo 'selected'; ?>>Cliente</option>
-        </select><br>
-
-        <label for="estado">Estado:</label>
-        <select id="estado" name="estado" required>
-            <option value="1" <?php if ($usuario['estado'] == 1) echo 'selected'; ?>>Activo</option>
-            <option value="0" <?php if ($usuario['estado'] == 0) echo 'selected'; ?>>Inactivo</option>
-        </select><br>
-
-        <button type="submit">Actualizar</button>
-    </form>
+        <div class="container-fluid">
+            <br>
+            <table class="custom-table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Usuario</th>
+                <th>Correo</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Fecha Registro</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($usuarios as $usuario): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($usuario['nombre']); ?></td>
+                    <td><?php echo htmlspecialchars($usuario['nombre_usuario']); ?></td>
+                    <td><?php echo htmlspecialchars($usuario['correo']); ?></td>
+                    <td><?php echo htmlspecialchars($usuario['rol']); ?></td>
+                    <td><?php echo $usuario['estado'] ? 'Activo' : 'Inactivo'; ?></td>
+                    <td><?php echo htmlspecialchars($usuario['fecha_registro']); ?></td>
+                    <td>
+                        <a href="actualizar_usuario.php?id=<?php echo $usuario['id']; ?>">Editar</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+        </div>  
+    </div>
 </body>
 </html>

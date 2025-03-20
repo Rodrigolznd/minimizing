@@ -5,6 +5,14 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
     exit();
 }
 ?>
+<?php
+include 'conexion.php';
+
+// Obtener todos los productos
+$query = "SELECT id, nombre, descripcion, precio, categoria, fecha_registro FROM productos";
+$stmt = $pdo->query($query);
+$productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -123,16 +131,18 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
                 <th>Descripción</th>
                 <th>Precio</th>
                 <th>Categoría</th>
+                <th>Acción</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($usuarios as $usuario): ?>
+            <?php foreach ($productos as $producto): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($usuario['nombre_usuario']); ?></td>
-                    <td><?php echo htmlspecialchars($usuario['rol']); ?></td>
-                    <td><?php echo htmlspecialchars($usuario['estado']); ?></td>
+                    <td><?php echo htmlspecialchars($producto['nombre']); ?></td>
+                    <td><?php echo htmlspecialchars($producto['descripcion']); ?></td>
+                    <td><?php echo htmlspecialchars($producto['precio']); ?></td>
+                    <td><?php echo htmlspecialchars($producto['categoria']); ?></td>
                     <td>
-                        <a href="editar_usuario.php?id=<?php echo $usuario['id']; ?>">Editar</a>
+                        <a href="?id=<?php echo $producto['id']; ?>">Editar</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -168,8 +178,7 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
         <button type="submit">Registrar Producto</button>
         <button type="button" id="cancelModalBtn">Cancelar</button>
     </div>
-</form>
-
+    </form>
         </div>
     </div>
 
@@ -181,14 +190,17 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
         const openModalBtn = document.getElementById("openModalBtn");
         const closeModalBtn = document.getElementById("closeModalBtn");
         const cancelModalBtn = document.getElementById("cancelModalBtn");
+        const registerIcon = document.querySelector("#openModalBtn img"); // Selecciona la imagen dentro del enlace
 
         openModalBtn.addEventListener("click", function(event) {
             event.preventDefault();
             registerModal.style.display = "block";
+            registerIcon.src = "img/clicregistrarproducto.png"; // Cambia la imagen al abrir el modal
         });
 
         function closeRegisterModal() {
             registerModal.style.display = "none";
+            registerIcon.src = "img/registrarproducto.png"; // Cambia la imagen al cerrar el modal
         }
 
         closeModalBtn.addEventListener("click", closeRegisterModal);
@@ -199,17 +211,7 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
                 closeRegisterModal();
             }
         }
-    });
-    // Cerrar el modal con el botón de cancelar
-document.getElementById("cancelModalBtn").addEventListener("click", function () {
-    document.getElementById("registerModal").style.display = "none";
-});
-
-// Cerrar el modal con la 'X'
-document.getElementById("closeModalBtn").addEventListener("click", function () {
-    document.getElementById("registerModal").style.display = "none";
-});
-
+    })
 </script>
 
 </body>

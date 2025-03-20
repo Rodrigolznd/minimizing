@@ -75,7 +75,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php endif; ?>
             <div class="separator"></div>
             <?php if ($_SESSION['rol'] === 'admin'): ?>
-            <a href="#eliminar">
+            <a href="eliminar_usuario.php">
              Eliminar <img src="img/eliminar.png" width="30" alt="Eliminar"></a>
             <?php endif; ?>
         </div>

@@ -4,9 +4,24 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
     header("Location: index.html");
     exit();
 }
-?>
-<?php
 include 'conexion.php';
+
+// Verificar si hay una solicitud de eliminación
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+
+    // Asegúrate de que el ID es válido (esto es importante para evitar inyecciones SQL)
+    if (filter_var($id, FILTER_VALIDATE_INT)) {
+        $query = "DELETE FROM usuarios WHERE id = :id";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Redirige después de la eliminación para evitar la reenvío del formulario
+        header("Location: usuarios.php");
+        exit();
+    }
+}
 
 // Obtener todos los usuarios
 $query = "SELECT id, nombre, nombre_usuario, correo, rol, estado, fecha_registro FROM usuarios";
@@ -18,7 +33,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de usuarios</title>
+    <title>ELiminar usuaurio</title>
     <link rel="stylesheet" href="css/styles.css">
     <style>
     .main-container {
@@ -70,13 +85,13 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="separator"></div>
             <?php if ($_SESSION['rol'] === 'admin'): ?>
         <a href="usuarios.php">
-             Editar <img src="img/cliceditar.png" width="30" alt="Editar">
+             Editar <img src="img/editar.png" width="30" alt="Editar">
         </a>
         <?php endif; ?>
             <div class="separator"></div>
             <?php if ($_SESSION['rol'] === 'admin'): ?>
-            <a href="eliminar_usuario.php">
-             Eliminar <img src="img/eliminar.png" width="30" alt="Eliminar"></a>
+            <a href="usuarios.php">
+             Eliminar <img src="img/cliceliminar.png" width="30" alt="Eliminar"></a>
             <?php endif; ?>
         </div>
 
@@ -104,7 +119,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td><?php echo $usuario['estado'] ? 'Activo' : 'Inactivo'; ?></td>
                     <td><?php echo htmlspecialchars($usuario['fecha_registro']); ?></td>
                     <td>
-                        <a href="actualizar_usuario.php?id=<?php echo $usuario['id']; ?>">Editar</a>
+                         <a href="?id=<?php echo $usuario['id']; ?>" onclick="return confirmDelete()">Eliminar</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -112,5 +127,10 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </table>
         </div>  
     </div>
+    <script>
+    function confirmDelete() {
+        return confirm('¿Estás seguro de que quieres eliminar este usuario?');
+    }
+    </script>
 </body>
 </html>

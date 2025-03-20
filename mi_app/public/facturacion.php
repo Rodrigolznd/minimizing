@@ -15,15 +15,15 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
         .main-container {
             border: 2px solid black; /* Borde negro alrededor del contenedor */
             margin: 20px auto;
-            width: 80%;
-            height: 80px; /* Ajusta la altura del contenedor */
+            width: 70%;
+            height: 70px; /* Ajusta la altura del contenedor */
             overflow-y: unset; /* Habilita el scroll vertical */
             background-color: #f0f0f0; /* Fondo gris claro */
             padding: 10px;
         }
         /* Estilos para el modal */
         .modal {
-            display: block; /* Mostrar el modal por defecto */
+            display: none; /* Mostrar el modal por defecto */
             position: fixed;
             z-index: 10;
             left: 0;
@@ -109,11 +109,63 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
     </header>
      <div class="main-container">
         <div id="registro-acciones" class="acciones">
-            <a href="generarfactura.php" onclick="openRegisterModal()">
+            <a href="#" onclick="openRegisterModal()">
                 Generar factura
                 <img src="img/generarfactura.png" width="30" alt="generarfactura">
             </a>
         </div>    
-    <script src="script.js"></script>
+            <!-- Modal para generar factura -->
+            <div id="registerModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span class="close" onclick="closeRegisterModal()">&times;</span>
+                    </div>
+                    <h2>Generar factura</h2>
+                    <form id="registerForm">
+                        <label for="cliente">Cliente:</label>
+                        <input type="text" id="cliente" name="cliente" >
+                        <br><br>
+                        
+                        <label for="fecha">Fecha:</label>
+                        <input type="date" id="fecha" name="fecha" >
+                        <br><br>
+                        
+                        <label for="productos">Productos:</label>
+                        <textarea id="productos" name="productos"></textarea>
+                        <br><br>
+                        
+                        <label for="cantidad">Cantidad:</label>
+                        <input type="number" id="cantidad" name="cantidad">
+                        <br><br>
+                        
+                        <label for="precio">Precio Total (COP):</label>
+                        <input type="text" id="precio" name="precio" >
+                        <br><br>
+                        
+                        <div class="buttons">
+                            <button type="submit">Generar factura</button>
+                            <button type="button" onclick="closeRegisterModal()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>    
+    <script>
+        function openRegisterModal() {
+            document.getElementById('registerModal').style.display = 'block';
+        }
+
+        function closeRegisterModal() {
+            document.getElementById('registerModal').style.display = 'none';
+        }
+
+        // Cerrar el modal si se hace clic fuera de él
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('registerModal')) {
+                closeRegisterModal();
+            }
+        }
+    </script>
 </body>
 </html>

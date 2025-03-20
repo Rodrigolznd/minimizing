@@ -122,7 +122,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php endif; ?>
             <div class="separator"></div>
             <?php if ($_SESSION['rol'] === 'admin'): ?>
-            <a href="#eliminar">
+            <a href="eliminar_usuario.php">
              Eliminar <img src="img/eliminar.png" width="30" alt="Eliminar"></a>
             <?php endif; ?>
         </div>
@@ -164,16 +164,16 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <h2>Registrar Usuario</h2>
     <form id="registroForm">
     <label for="nombre">Nombre completo:</label>
-    <input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre completo" required autocomplete="name">
+    <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" required autocomplete="name">
 
     <label for="nombre_usuario">Nombre de usuario:</label>
-    <input type="text" id="nombre_usuario" name="nombre_usuario" placeholder="Ingrese su usuario" required autocomplete="username" minlength="4" maxlength="30">
+    <input type="text" id="nombre_usuario" name="nombre_usuario" placeholder="Ingrese el nombre de usuario" required autocomplete="username" minlength="4" maxlength="30">
 
     <label for="correo">Correo Electrónico:</label>
     <input type="email" id="correo" name="correo" placeholder="ejemplo@correo.com" required autocomplete="email">
 
     <label for="clave">Contraseña:</label>
-    <input type="password" id="clave" name="clave" placeholder="Ingrese su contraseña" required minlength="6" maxlength="20" autocomplete="new-password">
+    <input type="password" id="clave" name="clave" placeholder="Ingrese la contraseña" required minlength="6" maxlength="20" autocomplete="new-password">
 
     <label for="rol">Rol:</label>
     <select id="rol" name="rol" required>
@@ -224,7 +224,6 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         }
     });
-</script>
-
+    </script>
 </body>
 </html>

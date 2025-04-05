@@ -23,7 +23,7 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
         }
         /* Estilos para el modal */
         .modal {
-            display: none; /* Mostrar el modal por defecto */
+            display: none;
             position: fixed;
             z-index: 10;
             left: 0;
@@ -107,65 +107,78 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
             </div>
         </div>
     </header>
-     <div class="main-container">
-        <div id="registro-acciones" class="acciones">
-            <a href="#" onclick="openRegisterModal()">
-                Generar factura
-                <img src="img/generarfactura.png" width="30" alt="generarfactura">
-            </a>
-        </div>    
-            <!-- Modal para generar factura -->
-            <div id="registerModal" class="modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <span class="close" onclick="closeRegisterModal()">&times;</span>
-                    </div>
-                    <h2>Generar factura</h2>
-                    <form id="registerForm">
-                        <label for="cliente">Cliente:</label>
-                        <input type="text" id="cliente" name="cliente" >
-                        <br><br>
-                        
-                        <label for="fecha">Fecha:</label>
-                        <input type="date" id="fecha" name="fecha" >
-                        <br><br>
-                        
-                        <label for="productos">Productos:</label>
-                        <textarea id="productos" name="productos"></textarea>
-                        <br><br>
-                        
-                        <label for="cantidad">Cantidad:</label>
-                        <input type="number" id="cantidad" name="cantidad">
-                        <br><br>
-                        
-                        <label for="precio">Precio Total (COP):</label>
-                        <input type="text" id="precio" name="precio" >
-                        <br><br>
-                        
-                        <div class="buttons">
-                            <button type="submit">Generar factura</button>
-                            <button type="button" onclick="closeRegisterModal()">Cancelar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    
+    <div class="main-container">
+    <div id="registro-acciones" class="acciones">
+        <?php if ($_SESSION['rol'] === 'admin'): ?>
+        <!-- Botón que abrirá el modal -->
+        <a href="#" id="openModalBtn">
+            Generar Factura
+            <img id="openModalImg" src="img/generarfactura.png" width="30" alt="Generar Factura">
+        </a>     
+        <?php endif; ?>
+    </div>
+
+<!-- Modal para Generar Factura -->
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" id="closeModalBtn">&times;</span>
         </div>
-    </div>    
-    <script>
-        function openRegisterModal() {
-            document.getElementById('registerModal').style.display = 'block';
-        }
+        <h2>Generar Factura</h2>
+        <form id="generarFacturaForm" enctype="multipart/form-data">
+            <label for="cliente">Cliente:</label>
+            <input type="text" id="cliente" name="cliente" placeholder="Nombre del cliente" required>
+
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" name="fecha" required>
+
+            <label for="productos">Productos:</label>
+            <textarea id="productos" name="productos" placeholder="Descripción de los productos" rows="4" required></textarea>
+
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" id="cantidad" name="cantidad" placeholder="Cantidad de productos" required>
+
+            <label for="precio">Precio:</label>
+            <input type="number" step="0.01" id="precio" name="precio" placeholder="Precio del producto" required>
+
+            <div class="buttons">
+                <button type="submit">Generar Factura</button>
+                <button type="button" id="cancelModalBtn">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="js/generar_factura.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const registerModal = document.getElementById("registerModal");
+        const openModalBtn = document.getElementById("openModalBtn");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+        const cancelModalBtn = document.getElementById("cancelModalBtn");
+        const registerIcon = document.querySelector("#openModalBtn img");
+
+        openModalBtn.addEventListener("click", function(event) {
+            event.preventDefault();
+            registerModal.style.display = "block";
+            registerIcon.src = "img/clicgenerarfactura.png";
+        });
 
         function closeRegisterModal() {
-            document.getElementById('registerModal').style.display = 'none';
+            registerModal.style.display = "none";
+            registerIcon.src = "img/generarfactura.png";
         }
 
-        // Cerrar el modal si se hace clic fuera de él
+        closeModalBtn.addEventListener("click", closeRegisterModal);
+        cancelModalBtn.addEventListener("click", closeRegisterModal);
+
         window.onclick = function(event) {
-            if (event.target == document.getElementById('registerModal')) {
+            if (event.target === registerModal) {
                 closeRegisterModal();
             }
         }
-    </script>
+    });
+</script>
 </body>
 </html>

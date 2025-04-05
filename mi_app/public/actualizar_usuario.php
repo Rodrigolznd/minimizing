@@ -83,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id) {
         </select><br>
 
         <button type="submit">Actualizar</button>
+        <a href="editar_usuario.php">Cancelar</a>
     </form>
 </body>
 </html>

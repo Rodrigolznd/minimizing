@@ -20,65 +20,65 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de usuarios</title>
     <link rel="stylesheet" href="css/styles.css">
-    <style>
-               /* Estilos para el modal */
-        .modal {
-            display: block; /* Ocultar el modal por defecto */
-            position: fixed;
-            z-index: 10;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4); /* Fondo oscuro semi-transparente */
-        }
+        <style>
+                /* Estilos para el modal */
+            .modal {
+                display: block; /* Ocultar el modal por defecto */
+                position: fixed;
+                z-index: 10;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.4); /* Fondo oscuro semi-transparente */
+            }
 
-        .modal-content {
-            position: absolute;
-            top: 100px; /* Ajusta según la posición deseada */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 400px; /* Ancho del formulario */
-            background-color: rgb(195, 195, 195); /* Fondo gris */
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            position: relative; /* Necesario para posicionar el botón de cierre */
-        }
+            .modal-content {
+                position: absolute;
+                top: 100px; /* Ajusta según la posición deseada */
+                left: 50%;
+                transform: translateX(-50%);
+                width: 400px; /* Ancho del formulario */
+                background-color: rgb(195, 195, 195); /* Fondo gris */
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+                position: relative; /* Necesario para posicionar el botón de cierre */
+            }
 
-        .modal-header {
-            display: flex;
-            justify-content: flex-end;
-        }
+            .modal-header {
+                display: flex;
+                justify-content: flex-end;
+            }
 
-        .close {
-            font-size: 24px;
-            cursor: pointer;
-            color: #333;
-        }
+            .close {
+                font-size: 24px;
+                cursor: pointer;
+                color: #333;
+            }
 
-        .modal-content label {
-            display: block;
-            margin-bottom: 10px;
-        }
+            .modal-content label {
+                display: block;
+                margin-bottom: 10px;
+            }
 
-        .modal-content input,
-        .modal-content select {
-            width: calc(100% - 20px);
-            padding: 8px;
-            margin-bottom: 10px;
-        }
+            .modal-content input,
+            .modal-content select {
+                width: calc(100% - 20px);
+                padding: 8px;
+                margin-bottom: 10px;
+            }
 
-        .modal-content .buttons {
-            display: flex;
-            justify-content: space-between;
-        }
+            .modal-content .buttons {
+                display: flex;
+                justify-content: space-between;
+            }
 
-        .modal-content .buttons button {
-            padding: 10px;
-        }
-    </style>
+            .modal-content .buttons button {
+                padding: 10px;
+            }
+        </style>
 </head>
 <body>
     <header>

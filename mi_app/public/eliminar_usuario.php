@@ -84,7 +84,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endif; ?>
             <div class="separator"></div>
             <?php if ($_SESSION['rol'] === 'admin'): ?>
-        <a href="usuarios.php">
+        <a href="registrar_usuario.php">
              Editar <img src="img/editar.png" width="30" alt="Editar">
         </a>
         <?php endif; ?>
@@ -119,7 +119,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td><?php echo $usuario['estado'] ? 'Activo' : 'Inactivo'; ?></td>
                     <td><?php echo htmlspecialchars($usuario['fecha_registro']); ?></td>
                     <td>
-                         <a href="?id=<?php echo $usuario['id']; ?>" onclick="return confirmDelete()">Eliminar</a>
+                        <a href="?id=<?php echo $usuario['id']; ?>" onclick="return confirmDelete()">Eliminar</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
